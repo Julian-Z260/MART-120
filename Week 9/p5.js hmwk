@@ -1,0 +1,67 @@
+function setup() {
+  createCanvas(400, 400);
+  background(220);
+
+  // Title
+  textSize(20);
+  textAlign(CENTER);
+  fill(50, 50, 200);
+  text("The man!", width / 2, 30);
+
+  // Face background
+  fill(255, 224, 189);
+  ellipse(200, 200, 150, 180); // Head
+
+  // Eyes
+  fill(255);
+  ellipse(180, 190, 30, 20); // Left eye
+  ellipse(220, 190, 30, 20); // Right eye
+
+  fill(0);
+  ellipse(180, 190, 10, 10); // Left pupil
+  ellipse(220, 190, 10, 10); // Right pupil
+
+  // Eye highlights
+  stroke(255);
+  strokeWeight(3);
+  point(182, 188);
+  point(222, 188);
+
+  // Nose (triangle)
+  fill(245, 194, 153);
+  triangle(200, 200, 190, 230, 210, 230);
+
+  // Mouth
+  stroke(0);
+  line(190, 250, 210, 250); // Simple mouth
+
+  // Hair (lines and triangle for detail)
+  stroke(0);
+  strokeWeight(2);
+  line(170, 150, 175, 130);
+  line(180, 145, 185, 120);
+  line(200, 140, 200, 115);
+  line(220, 145, 215, 120);
+  line(230, 150, 225, 130);
+
+  // Extra hair detail (triangle)
+  fill(0);
+  triangle(180, 120, 200, 100, 220, 120);
+
+  // Neck
+  fill(255, 224, 189);
+  rect(185, 280, 30, 40);
+
+  // Shirt
+  fill(0, 102, 153);
+  rect(160, 320, 80, 50);
+
+  // Signature
+  textSize(12);
+  fill(0);
+  text("Julian Z.", width - 50, height - 10);
+}
+
+function draw() {
+  // No continuous drawing needed
+}
