@@ -1,0 +1,150 @@
+let xShapes = [];
+let yShapes = [];
+let diagShape;
+let titleSize = 20;
+let sizeChange = 1;
+let sizeCount = 0;
+let growing = true;
+let titleMaxChanges = 5;
+
+// Signature movement
+let sigX = 50;
+let sigY = 450;
+let sigDir = 0;
+let sigSpeed = 1;
+
+// Head scale animation
+let headSize = 150;
+let headDir = 1;
+
+function setup() {
+  createCanvas(500, 500);
+
+  // Initialize x-moving shapes
+  for (let i = 0; i < 2; i++) {
+    xShapes.push({
+      x: random(50, 450),
+      y: random(100, 400),
+      speed: random(1, 3),
+      dir: 1,
+      color: randomColor()
+    });
+  }
+
+  // Initialize y-moving shapes
+  for (let i = 0; i < 2; i++) {
+    yShapes.push({
+      x: random(100, 400),
+      y: random(50, 450),
+      speed: random(1, 3),
+      dir: 1,
+      color: randomColor()
+    });
+  }
+
+  // Diagonal shape
+  diagShape = {
+    x: 250,
+    y: 250,
+    speedX: random(1, 2),
+    speedY: random(1, 2),
+    dirX: 1,
+    dirY: 1,
+    color: randomColor()
+  };
+}
+
+function draw() {
+  background(220);
+
+  // Title with size animation
+  textAlign(CENTER);
+  textSize(titleSize);
+  fill(50, 100, 200);
+  text("Bouncing Shapes!", width / 2, 40);
+
+  if (growing) {
+    titleSize += sizeChange;
+    if (++sizeCount >= titleMaxChanges) growing = false;
+  } else {
+    titleSize -= sizeChange;
+    if (--sizeCount <= 0) growing = true;
+  }
+
+  // Animate and draw head
+  headSize += 0.5 * headDir;
+  if (headSize > 180 || headSize < 140) headDir *= -1;
+
+  fill(255, 224, 189);
+  ellipse(250, 250, headSize, headSize + 30); // Animated head
+
+  // X-moving shapes
+  xShapes.forEach(shape => {
+    fill(shape.color);
+    ellipse(shape.x, shape.y, 40, 40);
+    shape.x += shape.speed * shape.dir;
+    if (shape.x > width - 20 || shape.x < 20) {
+      shape.dir *= -1;
+      shape.color = randomColor();
+    }
+  });
+
+  // Y-moving shapes
+  yShapes.forEach(shape => {
+    fill(shape.color);
+    rect(shape.x - 20, shape.y - 20, 40, 40);
+    shape.y += shape.speed * shape.dir;
+    if (shape.y > height - 20 || shape.y < 60) {
+      shape.dir *= -1;
+      shape.color = randomColor();
+    }
+  });
+
+  // Diagonal shape
+  fill(diagShape.color);
+  triangle(
+    diagShape.x, diagShape.y,
+    diagShape.x - 20, diagShape.y + 30,
+    diagShape.x + 20, diagShape.y + 30
+  );
+
+  diagShape.x += diagShape.speedX * diagShape.dirX;
+  diagShape.y += diagShape.speedY * diagShape.dirY;
+
+  if (diagShape.x > width - 20 || diagShape.x < 20) {
+    diagShape.dirX *= -1;
+    diagShape.color = randomColor();
+  }
+  if (diagShape.y > height - 30 || diagShape.y < 60) {
+    diagShape.dirY *= -1;
+    diagShape.color = randomColor();
+  }
+
+  // Signature animation (square path)
+  fill(0);
+  textSize(14);
+  text("Julian Z.", sigX, sigY);
+
+  switch (sigDir) {
+    case 0:
+      sigX += sigSpeed;
+      if (sigX >= 450) sigDir = 1;
+      break;
+    case 1:
+      sigY -= sigSpeed;
+      if (sigY <= 50) sigDir = 2;
+      break;
+    case 2:
+      sigX -= sigSpeed;
+      if (sigX <= 50) sigDir = 3;
+      break;
+    case 3:
+      sigY += sigSpeed;
+      if (sigY >= 450) sigDir = 0;
+      break;
+  }
+}
+
+function randomColor() {
+  return color(random(255), random(255), random(255));
+}
