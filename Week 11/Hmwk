@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Canvas Game</title>
+  <style>
+    canvas {
+      border: 2px solid black;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas" width="600" height="400"></canvas>
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let player = { x: 50, y: 50, size: 20, color: "blue", speed: 5 };
+let keys = {};
+
+let obstacles = [
+  { x: 100, y: 100, w: 30, h: 30, dx: 2, dy: 1, color: "red" },
+  { x: 300, y: 200, w: 50, h: 20, dx: -2, dy: 1.5, color: "green" }
+];
+
+let staticObstacle = null;
+
+const exit = { x: 550, y: 350, w: 40, h: 40, color: "gold" };
+
+let won = false;
+
+// Handle keyboard input
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+// Handle mouse click to add a static obstacle
+canvas.addEventListener("click", e => {
+  if (!staticObstacle) {
+    staticObstacle = {
+      x: e.offsetX - 15,
+      y: e.offsetY - 15,
+      w: 30,
+      h: 30,
+      color: "purple"
+    };
+  }
+});
+
+function movePlayer() {
+  if (keys["ArrowUp"] || keys["w"]) player.y -= player.speed;
+  else if (keys["ArrowDown"] || keys["s"]) player.y += player.speed;
+  
+  if (keys["ArrowLeft"] || keys["a"]) player.x -= player.speed;
+  else if (keys["ArrowRight"] || keys["d"]) player.x += player.speed;
+
+  // Keep player inside canvas
+  player.x = Math.max(0, Math.min(canvas.width - player.size, player.x));
+  player.y = Math.max(0, Math.min(canvas.height - player.size, player.y));
+}
+
+function moveObstacles() {
+  for (let obs of obstacles) {
+    obs.x += obs.dx;
+    obs.y += obs.dy;
+
+    // Wrap around screen
+    if (obs.x > canvas.width) obs.x = -obs.w;
+    else if (obs.x + obs.w < 0) obs.x = canvas.width;
+
+    if (obs.y > canvas.height) obs.y = -obs.h;
+    else if (obs.y + obs.h < 0) obs.y = canvas.height;
+  }
+}
+
+function drawRect(obj) {
+  ctx.fillStyle = obj.color;
+  ctx.fillRect(obj.x, obj.y, obj.w || obj.size, obj.h || obj.size);
+}
+
+function checkWin() {
+  if (
+    player.x + player.size > exit.x &&
+    player.x < exit.x + exit.w &&
+    player.y + player.size > exit.y &&
+    player.y < exit.y + exit.h
+  ) {
+    won = true;
+  }
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!won) {
+    movePlayer();
+    moveObstacles();
+    checkWin();
+  }
+
+  drawRect(player);
+
+  for (let obs of obstacles) {
+    drawRect(obs);
+  }
+
+  if (staticObstacle) drawRect(staticObstacle);
+
+  drawRect(exit);
+
+  if (won) {
+    ctx.fillStyle = "black";
+    ctx.font = "30px Arial";
+    ctx.fillText("You Win!", 240, 200);
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+</body>
+</html>
