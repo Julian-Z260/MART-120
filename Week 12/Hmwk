@@ -1,0 +1,129 @@
+let player;
+let obstacles = [];
+let win = false;
+
+function setup() {
+  createCanvas(600, 400);
+  createPlayer();
+  createObstacles();
+}
+
+function draw() {
+  background(30);
+  drawBorders();
+  drawExit();
+  movePlayer();
+  drawPlayer();
+  moveObstacles();
+  drawObstacles();
+  checkWin();
+  if (win) {
+    displayWinMessage();
+    noLoop();
+  }
+}
+
+function createPlayer() {
+  player = {
+    x: 50,
+    y: 50,
+    size: 20,
+    speed: 3
+  };
+}
+
+function movePlayer() {
+  if (keyIsDown(LEFT_ARROW)) player.x -= player.speed;
+  if (keyIsDown(RIGHT_ARROW)) player.x += player.speed;
+  if (keyIsDown(UP_ARROW)) player.y -= player.speed;
+  if (keyIsDown(DOWN_ARROW)) player.y += player.speed;
+}
+
+function drawPlayer() {
+  fill(255);
+  noStroke();
+  ellipse(player.x, player.y, player.size);
+}
+
+function mousePressed() {
+  fill(255, 0, 0);
+  noStroke();
+  ellipse(mouseX, mouseY, 15);
+}
+
+function createObstacles() {
+  obstacles.push({
+    x: random(width),
+    y: random(height),
+    size: 30,
+    color: color(255, 100, 100),
+    dx: random(-2, 2),
+    dy: random(-2, 2)
+  });
+  obstacles.push({
+    x: random(width),
+    y: random(height),
+    size: 50,
+    color: color(100, 255, 200),
+    dx: random(-2, 2),
+    dy: random(-2, 2)
+  });
+}
+
+function moveObstacles() {
+  for (let obs of obstacles) {
+    obs.x += obs.dx;
+    obs.y += obs.dy;
+    if (obs.x > width) obs.x = 0;
+    if (obs.x < 0) obs.x = width;
+    if (obs.y > height) obs.y = 0;
+    if (obs.y < 0) obs.y = height;
+  }
+}
+
+function drawObstacles() {
+  for (let obs of obstacles) {
+    fill(obs.color);
+    noStroke();
+    ellipse(obs.x, obs.y, obs.size);
+  }
+}
+
+function drawBorders() {
+  stroke(255);
+  noFill();
+  strokeWeight(4);
+  rect(0, 0, width, height);
+}
+
+function drawExit() {
+  fill(0, 255, 0);
+  noStroke();
+  rect(width - 40, height - 40, 30, 30);
+}
+
+function checkWin() {
+  if (player.x > width - 40 && player.y > height - 40) {
+    win = true;
+  }
+}
+
+function displayWinMessage() {
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  fill(255);
+  text("You Win!", width / 2, height / 2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
