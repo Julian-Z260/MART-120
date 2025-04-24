@@ -1,0 +1,137 @@
+let player;
+let obstacles = [];
+let staticObstacles = [];
+let win = false;
+
+function setup() {
+  createCanvas(600, 400);
+  createPlayer();
+  createObstacles();
+}
+
+function draw() {
+  background(30);
+  drawBorders();
+  drawExit();
+  movePlayer();
+  drawPlayer();
+  moveObstacles();
+  drawObstacles();
+  drawStaticObstacles();
+  checkWin();
+  if (win) {
+    displayWinMessage();
+    noLoop();
+  }
+}
+
+// Create the player object
+function createPlayer() {
+  player = {
+    x: 50,
+    y: 50,
+    size: 20,
+    speed: 3
+  };
+}
+
+// Move the player with arrow keys
+function movePlayer() {
+  if (keyIsDown(LEFT_ARROW)) player.x -= player.speed;
+  if (keyIsDown(RIGHT_ARROW)) player.x += player.speed;
+  if (keyIsDown(UP_ARROW)) player.y -= player.speed;
+  if (keyIsDown(DOWN_ARROW)) player.y += player.speed;
+}
+
+// Draw the player
+function drawPlayer() {
+  fill(255);
+  noStroke();
+  ellipse(player.x, player.y, player.size);
+}
+
+// Create at least 5 moving obstacles of different sizes and colors
+function createObstacles() {
+  for (let i = 0; i < 5; i++) {
+    obstacles.push({
+      x: random(width),
+      y: random(height),
+      size: random(20, 50),
+      color: color(random(255), random(255), random(255)),
+      dx: random(-2, 2),
+      dy: random(-2, 2)
+    });
+  }
+}
+
+// Move obstacles randomly and wrap around edges
+function moveObstacles() {
+  for (let obs of obstacles) {
+    obs.x += obs.dx;
+    obs.y += obs.dy;
+
+    // Wrap around the screen
+    if (obs.x > width) obs.x = 0;
+    if (obs.x < 0) obs.x = width;
+    if (obs.y > height) obs.y = 0;
+    if (obs.y < 0) obs.y = height;
+  }
+}
+
+// Draw all moving obstacles
+function drawObstacles() {
+  for (let obs of obstacles) {
+    fill(obs.color);
+    noStroke();
+    ellipse(obs.x, obs.y, obs.size);
+  }
+}
+
+// Draw all static obstacles added by mouse
+function drawStaticObstacles() {
+  for (let obs of staticObstacles) {
+    fill(obs.color);
+    noStroke();
+    ellipse(obs.x, obs.y, obs.size);
+  }
+}
+
+// Click to add a new, non-moving obstacle
+function mousePressed() {
+  staticObstacles.push({
+    x: mouseX,
+    y: mouseY,
+    size: random(15, 40),
+    color: color(255, 0, 0)
+  });
+}
+
+// Draw screen border
+function drawBorders() {
+  stroke(255);
+  noFill();
+  strokeWeight(4);
+  rect(0, 0, width, height);
+}
+
+// Draw exit area
+function drawExit() {
+  fill(0, 255, 0);
+  noStroke();
+  rect(width - 40, height - 40, 30, 30);
+}
+
+// Check if player reaches the exit
+function checkWin() {
+  if (player.x > width - 40 && player.y > height - 40) {
+    win = true;
+  }
+}
+
+// Display win message
+function displayWinMessage() {
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  fill(255);
+  text("You Win!", width / 2, height / 2);
+}
