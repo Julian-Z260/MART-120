@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Maze Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="maze"></div>
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#maze {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
+  gap: 2px;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  background: #444;
+  box-sizing: border-box;
+}
+
+.wall {
+  background: #222;
+}
+
+.player {
+  background: lime;
+}
+
+.goal {
+  background: gold;
+}
